@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ahmad Mandozai's Book Reader</title>
+<!-- 100% offline: no CDN links, no external fonts, no external API calls.
+     pdf.js is loaded from the local ./lib folder. -->
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <!-- simple inline book-mark icon, no external image needed -->
+        <svg viewBox="0 0 48 48" width="30" height="30">
+          <path d="M6 8c6-4 14-4 18 0v32c-4-4-12-4-18 0V8z" fill="var(--accent)"/>
+          <path d="M42 8c-6-4-14-4-18 0v32c4-4 12-4 18 0V8z" fill="var(--accent-dark)"/>
+        </svg>
+      </span>
+      <div class="brand-text">
+        <h1>Ahmad Mandozai's Book Reader</h1>
+        <p class="tagline">Offline multilingual reading &amp; read-aloud studio</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="darkModeToggle" class="icon-btn" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+      <span class="offline-badge" title="Runs fully offline — no internet required">● Offline Ready</span>
+    </div>
+  </header>
+
+  <!-- ============ MAIN LAYOUT ============ -->
+  <div class="app-shell">
+
+    <!-- ============ LEFT SIDEBAR: input + language ============ -->
+    <aside class="sidebar" id="sidebar">
+      <section class="panel">
+        <h2>1. Bring in text</h2>
+
+        <label class="field-label" for="pasteArea">Type or paste text</label>
+        <textarea id="pasteArea" rows="5" placeholder="Paste or type text here… / متن اینجا بنویسید… / متن دلته ولیکئ…"></textarea>
+        <button id="loadPastedText" class="btn btn-secondary">Show in book</button>
+
+        <div class="divider"><span>or</span></div>
+
+        <label class="field-label" for="fileInput">Upload a file</label>
+        <div id="dropZone" class="drop-zone" tabindex="0" role="button" aria-label="Upload .txt or .pdf file, or drag and drop here">
+          <p><strong>Drag &amp; drop</strong> a .txt or .pdf file here</p>
+          <p class="muted">or click to browse</p>
+          <input type="file" id="fileInput" accept=".txt,.pdf" hidden>
+        </div>
+        <p id="fileStatus" class="muted small"></p>
+      </section>
+
+      <section class="panel">
+        <h2>2. Language</h2>
+        <label class="field-label" for="langSelect">Reading language</label>
+        <select id="langSelect">
+          <option value="en" selected>English</option>
+          <option value="ps">پښتو (Pashto)</option>
+          <option value="fa">فارسی (Persian)</option>
+        </select>
+        <p class="muted small" id="langHint">Detects direction automatically (LTR/RTL). You can override the voice below.</p>
+      </section>
+
+      <section class="panel">
+        <h2>3. Voice &amp; speed</h2>
+        <label class="field-label" for="voiceSelect">Voice</label>
+        <select id="voiceSelect"></select>
+        <p id="voiceStatus" class="muted small"></p>
+
+        <label class="field-label" for="rateRange">Speed: <span id="rateValue">1x</span></label>
+        <input type="range" id="rateRange" min="0.5" max="2" step="0.1" value="1">
+
+        <label class="field-label" for="fontSizeRange">Font size: <span id="fontSizeValue">20px</span></label>
+        <input type="range" id="fontSizeRange" min="14" max="36" step="1" value="20">
+      </section>
+    </aside>
+
+    <!-- ============ CENTER: book display ============ -->
+    <main class="book-stage">
+      <div class="book-toolbar">
+        <div class="stats">
+          <span id="wordCount">0 words</span>
+          <span class="dot">·</span>
+          <span id="readTime">0 min read</span>
+          <span class="dot">·</span>
+          <span id="pageIndicator">Page 1</span>
+        </div>
+        <div class="stats-right">
+          <button id="bookmarkBtn" class="icon-btn" title="Resume from last saved position">🔖 Resume</button>
+          <button id="exportBtn" class="icon-btn" title="Export highlighted text as .txt">⬇ Export</button>
+        </div>
+      </div>
+
+      <div class="book-wrap">
+        <div class="book-page" id="bookPage" dir="ltr" lang="en">
+          <p id="placeholderText" class="placeholder">
+            Your text will appear here like an open book page.<br>
+            Paste text or upload a .txt / .pdf file on the left to begin — everything runs
+            completely offline, right here in your browser.
+          </p>
+          <div id="bookContent" class="book-content" hidden></div>
+        </div>
+      </div>
+
+      <div class="progress-track" id="progressTrack" aria-label="Reading progress">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ============ FLOATING SPEECH CONTROLS ============ -->
+  <footer class="controls-bar">
+    <button id="playBtn" class="ctrl-btn ctrl-primary" title="Read aloud (Space)">▶ Play</button>
+    <button id="pauseBtn" class="ctrl-btn" title="Pause / Resume" disabled>⏸ Pause</button>
+    <button id="stopBtn" class="ctrl-btn" title="Stop" disabled>⏹ Stop</button>
+    <div class="ctrl-progress-label"><span id="progressPct">0%</span></div>
+    <span class="footer-credit">Built by <strong>Ahmad Mandozai</strong></span>
+  </footer>
+
+  <!-- pdf.js loaded locally, no CDN -->
+  <script src="./lib/pdf.min.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
